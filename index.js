@@ -21,6 +21,7 @@ async function run (){
         const database = client.db('tourX');
         const serviceCollection = database.collection('blogs')
         const myOrderCollection = database.collection('myOrder')
+        const orderCollection = database.collection('orders')
        
 
         // GET API
@@ -34,6 +35,13 @@ async function run (){
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const service = await serviceCollection.findOne(query);
+            res.json(service)
+
+        })
+        app.get('/services/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const service = await myOrderCollection.findOne(query);
             res.json(service)
 
         })
@@ -54,13 +62,7 @@ async function run (){
             const result = await myOrderCollection.insertOne(booking)
             res.json(result)
         })
-        // delete a single data from cart
-        // app.delete('/booking/add/:id',async (req,res)=>{
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await myOrderCollection.deleteOne(query);
-        //     console.log('deleting',id, result);
-        // })
+       
         app.delete('/booking/add/:id',async (req,res)=> {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -68,6 +70,20 @@ async function run (){
             res.json(result);
             console.log(result);
           });
+        //   add confirm booking
+        app.post('/orders', async(req, res)=>{
+            const order = req.body;
+           const result = await orderCollection.insertOne(order)
+            res.json(result)
+        })
+
+        // add new item
+        app.post('/services',async(req, res) =>{
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.json(result)
+            console.log(result);
+        });
     }
     finally{
 
